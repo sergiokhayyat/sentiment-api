@@ -1,0 +1,101 @@
+---
+swagger: "2.0"
+info:
+  description: "Sentiment analysis API"
+  version: "1.0.0"
+  title: "Sentiment analysis API"
+  contact: {}
+tags:
+- name: "Default"
+  description: "Default section"
+schemes:
+- "http"
+paths:
+  /analyze:
+    post:
+      tags:
+      - "Default"
+      summary: "Analyze the sentiment of a text"
+      description: "Performs the sentiment analysis of the given text"
+      operationId: "controllers.default_controller.analyze_post"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/Analyze request"
+      responses:
+        200:
+          description: "The sentiment of the analyzed text"
+          schema:
+            $ref: "#/definitions/Sentiment response"
+        default:
+          description: "Generic error message"
+          schema:
+            $ref: "#/definitions/Simple return"
+      x-tags:
+      - tag: "Default"
+definitions:
+  Simple return:
+    type: "object"
+    required:
+    - "status"
+    - "title"
+    - "detail"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+        description: "Status code, the same as the HTML response code (2xx == OK,\
+          \ else ERR)"
+      title:
+        type: "string"
+        description: "Status message"
+      detail:
+        type: "string"
+        description: "Detailed explanation"
+      type:
+        type: "string"
+        description: "Message type"
+    description: "General return message"
+    example: {
+            "status" : 400,
+            "title" : "Bad Request",
+            "detail": "Unable to find \"text\" field to analyze"
+        }
+  Sentiment response:
+    type: "object"
+    required:
+    - "status"
+    - "sentiment"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+        description: "Status code, the same as the HTML response code (2xx == OK,\
+          \ else ERR)"
+      sentiment:
+        type: "number"
+        format: "double"
+        description: "sentiment analysis of a text, in the [-100, 100] range"
+    description: "Sentimen analysis return message"
+    example: {
+      "status": 200,
+      "sentiment": -33.33
+    }
+  Analyze request:
+    type: "object"
+    required:
+    - "text"
+    properties:
+      text:
+        type: "string"
+        description: "Text to analyze"
+    description: "Request object with the text to analyze"
+    example: {
+      "text": "This is a very good sample text."
+    }
